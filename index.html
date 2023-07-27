@@ -1,21 +1,23 @@
 <html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
-<style> circle {fill: lightblue; stroke: black;} 
-.center {
-    margin: auto;
-    width: 60%;
-    border: 3px solid #73AD21;
-    padding: 10px;
+
+<style> circle {fill: lightblue; stroke: black;}
+    .center {
+        margin: auto;
+        width: 60%;
+        border: 3px solid #73AD21;
+        padding: 10px;
 }
-</style>
-<body onload='init()'>
+</style>    
+<body onload='init()' class="center">                                      <!--Center the SVG -->
 <svg width=300 height=300>
 </svg>
+
 <script>
 async function init() {
     
-    var hscale = d3.scaleLog().domain([10,150]).range([0,200]) //CITY
-    var vscale = d3.scaleLog().domain([10,150]).range([200,0]) //HIGHWAY
+    var hscale = d3.scaleLog().domain([10,150]).range([0,200])             //CITY
+    var vscale = d3.scaleLog().domain([10,150]).range([200,0])             //HIGHWAY
     
     data = await d3.csv("https://flunky.github.io/cars2017.csv");
     
