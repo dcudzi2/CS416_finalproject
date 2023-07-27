@@ -10,9 +10,9 @@
     }
 </style>
 
-<div class="center" style="text-align:center;">
+<div style="text-align:center;">
 
-<p>Where does this text GOGT?</p>
+<p class="center">This is placeholder text for what will later be a description.</p>
     
 <body onload='init()'>
 <svg width=300 height=300"> </svg>
@@ -20,8 +20,8 @@
 <script>
 async function init() {
     
-    var hscale = d3.scaleLog().domain([10,150]).range([0,200])             //CITY
-    var vscale = d3.scaleLog().domain([10,150]).range([200,0])             //HIGHWAY
+    var hscale = d3.scaleLog().domain([10,150]).range([0,400])             //CITY
+    var vscale = d3.scaleLog().domain([10,150]).range([400,0])             //HIGHWAY
     
     data = await d3.csv("https://flunky.github.io/cars2017.csv");
     
@@ -48,7 +48,7 @@ async function init() {
     
     d3.select("svg")
         .append("g")
-            .attr("transform","translate(50,250)")
+            .attr("transform","translate(50,450)")
             .call(x_axis);
   
   }
