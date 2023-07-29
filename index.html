@@ -2,6 +2,27 @@
 <script src='https://d3js.org/d3.v5.min.js'></script>
 
 <style> circle {fill: lightblue; stroke: black;}
+    body {
+    	font: 11px sans-serif;
+    	background-color: #ffffff;
+    }
+            
+    /* Legend Position Style */
+    .legend {
+    	position:absolute;
+    	left:20px;
+    	top:30px;
+    }
+    
+    .axis text {
+    	font: 10px sans-serif;
+    }
+    
+    .axis line, .axis path {
+    	fill: none;
+    	stroke: #000;
+    	shape-rendering: crispEdges;
+    }
     .center {
         margin: auto;
         width: 80%;
@@ -10,7 +31,7 @@
     }
 </style>
 
-<h1 style="font-family: Helvetica; text-align:center;">
+<h1 style="font-family: Helvetica; text-align:center; font-size: 30px">
     CS416: Air Quality 2020 (EPA)
 </h1>
 <h2 style="font-family: Helvetica; text-align:center; font-size: 15px">
@@ -18,7 +39,7 @@
 </h2>
     
 <div style="text-align:center;">
-    <p class="center" style="font-family: Helvetica">
+    <p class="center" style="font-family: Helvetica; font-size: 12px">
         The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
     </p>
         
@@ -28,39 +49,9 @@
     <script>
     async function init() {
         
-        var hscale = d3.scaleLog().domain([10,150]).range([0,400])             //CITY
-        var vscale = d3.scaleLog().domain([10,150]).range([400,0])             //HIGHWAY
-        
-        data = await d3.csv("https://flunky.github.io/cars2017.csv");
         data_O3 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_44201_2020_OZONE_ABRIDGED.csv");
         data_NO2 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_42602_2020_NO2_ABRIDGED.csv");
-        
-        d3.select("svg")
-            .append("g")
-                .attr("transform","translate(50,50)")
-            .selectAll("circle")
-            .data(data)
-            .enter()
-            .append("circle")
-                .attr("cx", function(d,i) {return hscale(d.AverageCityMPG)})
-                .attr("cy", function(d,i) {return vscale(d.AverageHighwayMPG)})
-                .attr("r", function(d,i) {return parseInt(d.EngineCylinders)+2;})
-        
-        var y_axis =
-            d3.axisLeft(vscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
-        var x_axis =
-            d3.axisBottom(hscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
-        
-        d3.select("svg")
-            .append("g")
-                .attr("transform","translate(50,50)")
-                .call(y_axis);
-        
-        d3.select("svg")
-            .append("g")
-                .attr("transform","translate(50,450)")
-                .call(x_axis);
-      
+          
       }
     </script>
     </body>
