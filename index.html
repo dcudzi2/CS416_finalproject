@@ -31,7 +31,7 @@
 
     //LET FUNCTIONS FOR EVENTS
     let mouseOver = function(d) {
-        d3.selectAll(".Country")
+        d3.selectAll(".State")
           .transition()
           .duration(100)
           .style("opacity", .5)
@@ -39,17 +39,28 @@
           .transition()
           .duration(100)
           .style("opacity", 1)
+        tooltip.text(d); return tooltip.style("visibility", "visible");
       }
       
       let mouseLeave = function(d) {
-        d3.selectAll(".Country")
+        d3.selectAll(".State")
           .transition()
           .duration(100)
           .style("opacity", .8)
         d3.select(this)
           .transition()
           .duration(100)
+        return tooltip.style("visibility", "hidden");
       }
+
+    //Toooltip setup
+    var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("background", "#000")
+        .text("a simple tooltip");
         
     var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -82,20 +93,22 @@
         .data(topo.features)
         .enter()
         .append("path")
-          // draw each country
+          // draw each State
           .attr("d", d3.geoPath()
             .projection(projection)
           )
-          // set the color of each country
+          // set the color of each State
           .attr("fill", function (d) {
             d.total = data.get(d.id) || 0;
             return colorScale(d.total);
           })
         .style("stroke", "transparent")
-      	.attr("class", function(d){ return "Country" } )
+      	.attr("class", function(d){ return "State" })
+        .attr("AQI", function(d) {return d.value})
       	.style("opacity", .8)
-      	.on("mouseover", mouseOver )
-      	.on("mouseleave", mouseLeave )
+      	.on("mouseover", mouseOver)
+      	.on("mouseleave", mouseLeave)
+        .on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
     }
     
     </script>
