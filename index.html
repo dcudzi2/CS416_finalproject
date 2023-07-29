@@ -17,15 +17,14 @@
     <em>By Daniel Cudzich as part of Summer 2023</em>
 </h2>
     
-<div style="text-align:center;">
+<div id="my_dataviz" style="text-align:center;">
     <p class="center" style="font-family: Helvetica; font-size: 12px">
         The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
     </p>
     <button onclick="update(data1)">Ozone (O3)</button>
     <button onclick="update(data2)">Nitrous (NO2)</button>
     <button onclick="update(data2)">AQI</button>
-        
-    <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
+    <p style="font-family: Helvetica; font-size: 12px"></p>
 </div>
 
 <script>
@@ -33,95 +32,84 @@
 //data_O3 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_44201_2020_OZONE_ABRIDGED.csv");
 //data_NO2 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_42602_2020_NO2_ABRIDGED.csv");
 
-//LET FUNCTIONS FOR EVENTS
-let mouseOver = function(d) {
-    d3.selectAll(".State")
-        .transition()
-        .duration(100)
-        .style("opacity", .5)
-    d3.select(this)
-        .transition()
-        .duration(100)
-        .style("opacity", 1)
-    //tooltip.text(d);
-    return tooltip.style("visibility", "visible");
-}
-  
-let mouseLeave = function(d) {
-    d3.selectAll(".State")
-        .transition()
-        .duration(100)
-        .style("opacity", .8)
-    d3.select(this)
-        .transition()
-        .duration(100)
-    return tooltip.style("visibility", "hidden");
-}
+// Create 2 datasets
+var data1 = [
+   {ser1: 0.3, ser2: 4},
+   {ser1: 2, ser2: 16},
+   {ser1: 3, ser2: 8}
+];
 
-let mouseMove = function(d) {
-    return tooltip
-        .style("top", (d3.event.pageY-40)+"px")
-        .style("left",(d3.event.pageX-40)+"px")
-        .html("Meme " + d.id)
-}
+var data2 = [
+   {ser1: 1, ser2: 7},
+   {ser1: 4, ser2: 1},
+   {ser1: 6, ser2: 8}
+];
 
-//Toooltip setup
-var tooltip = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("visibility", "hidden")
-    .style("background-color", "white")
-    .html("<p font-family: Helvetica; font-size: 10px>You should not be seeing this.</p>");
-    
-var svg = d3.select("svg"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 50},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
-//Get the map created and centered
-var path = d3.geoPath();
-var projection = d3.geoMercator()
-  .scale(325)
-  .center([-125,52])
-  .translate([width / 2, height / 2]);
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-//Create the color scale
-var data = d3.map();
-var colorScale = d3.scaleLinear()
-  .domain([0,12.5,25])
-  .range(['green','yellow','red']);
+// Initialise a X axis:
+var x = d3.scaleLinear().range([0,width]);
+var xAxis = d3.axisBottom().scale(x);
+svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .attr("class","myXaxis")
 
-// Load external data and boot
-d3.queue()
-  .defer(d3.json, "https://dcudzi2.github.io/CS416_finalproject/us-states1.json")
-  .defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/statesdata1.csv", function(d) { data.set(d.id, d.value); })
-  .await(ready);
+// Initialize an Y axis
+var y = d3.scaleLinear().range([height, 0]);
+var yAxis = d3.axisLeft().scale(y);
+svg.append("g")
+  .attr("class","myYaxis")
 
-function ready(error, topo) {
+// Create a function that takes a dataset as input and update the plot:
+function update(data) {
 
-  // Draw the map
-  svg.append("g")
-    .selectAll("path")
-    .data(topo.features)
+  // Create the X axis:
+  x.domain([0, d3.max(data, function(d) { return d.ser1 }) ]);
+  svg.selectAll(".myXaxis").transition()
+    .duration(3000)
+    .call(xAxis);
+
+  // create the Y axis
+  y.domain([0, d3.max(data, function(d) { return d.ser2  }) ]);
+  svg.selectAll(".myYaxis")
+    .transition()
+    .duration(3000)
+    .call(yAxis);
+
+  // Create a update selection: bind to the new data
+  var u = svg.selectAll(".lineTest")
+    .data([data], function(d){ return d.ser1 });
+
+  // Updata the line
+  u
     .enter()
     .append("path")
-      // draw each State
-      .attr("d", d3.geoPath()
-        .projection(projection)
-      )
-      // set the color of each State
-      .attr("fill", function (d) {
-        d.total = data.get(d.id) || 0;
-        return colorScale(d.total);
-      })
-    .style("stroke", "transparent")
-    .attr("class", function(d){ return "State" })
-    .attr("AQI", function(d) {return d.value})
-    .style("opacity", .8)
-    .on("mouseover", mouseOver)
-    .on("mouseleave", mouseLeave)
-    .on("mousemove", mouseMove)
+    .attr("class","lineTest")
+    .merge(u)
+    .transition()
+    .duration(3000)
+    .attr("d", d3.line()
+      .x(function(d) { return x(d.ser1); })
+      .y(function(d) { return y(d.ser2); }))
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 2.5)
 }
+
+// At the beginning, I run the update function on the first dataset:
+update(data1)
 
 </script>
 
