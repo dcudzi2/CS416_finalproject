@@ -30,6 +30,30 @@
 
     //data_O3 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_44201_2020_OZONE_ABRIDGED.csv");
     //data_NO2 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_42602_2020_NO2_ABRIDGED.csv");
+
+    //LET FUNCTIONS FOR EVENTS
+    let mouseOver = function(d) {
+        d3.selectAll(".Country")
+          .transition()
+          .duration(200)
+          .style("opacity", .5)
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style("opacity", 1)
+          .style("stroke", "black")
+      }
+      
+      let mouseLeave = function(d) {
+        d3.selectAll(".Country")
+          .transition()
+          .duration(200)
+          .style("opacity", .8)
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style("stroke", "transparent")
+      }
         
     // The svg
     var svg = d3.select("svg"),
@@ -71,8 +95,13 @@
           .attr("fill", function (d) {
             d.total = data.get(d.id) || 0;
             return colorScale(d.total);
-          });
-        }
+          })
+        .style("stroke", "transparent")
+      	.attr("class", function(d){ return "Country" } )
+      	.style("opacity", .8)
+      	.on("mouseover", mouseOver )
+      	.on("mouseleave", mouseLeave )
+    }
     
     </script>
     
