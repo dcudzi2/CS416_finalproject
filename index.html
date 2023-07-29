@@ -21,6 +21,9 @@
     <p class="center" style="font-family: Helvetica; font-size: 12px">
         The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
     </p>
+    <button onclick="update(data1)">Ozone (O3)</button>
+    <button onclick="update(data2)">Nitrous (NO2)</button>
+    <button onclick="update(data2)">AQI</button>
         
     <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
     
@@ -58,11 +61,11 @@
         return tooltip
         	.style("top", (d3.event.pageY-40)+"px")
             .style("left",(d3.event.pageX-40)+"px")
-            .html("Meme " + d.id)
+            .html("Meme " + d.name)
     }
 
     //Toooltip setup
-    var tooltip = d3.select("body")
+    var tooltip = d3.select("mainmap")
         .append("div")
         .style("position", "absolute")
         .style("z-index", "10")
