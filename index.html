@@ -10,53 +10,58 @@
     }
 </style>
 
+<h1 style="font-family: Helvetica; text-align:center;">
+    CS416: Air Quality 2020 (EPA)
+</h1>
+<h2 style="font-family: Helvetica; text-align:center; font-size: 15px">
+    By Daniel Cudzich as part of Summer 2023
+</h2>
+    
 <div style="text-align:center;">
-
-<p class="center" style="font-family: Helvetica">
-    This is placeholder text for what will later be a description.
-</p>
+    <p class="center" style="font-family: Helvetica">
+        This is placeholder text for what will later be a description.
+    </p>
+        
+    <body onload='init()'>
+    <svg width=500 height=500"> </svg>
     
-<body onload='init()'>
-<svg width=500 height=500"> </svg>
-
-<script>
-async function init() {
-    
-    var hscale = d3.scaleLog().domain([10,150]).range([0,400])             //CITY
-    var vscale = d3.scaleLog().domain([10,150]).range([400,0])             //HIGHWAY
-    
-    data = await d3.csv("https://flunky.github.io/cars2017.csv");
-    
-    d3.select("svg")
-        .append("g")
-            .attr("transform","translate(50,50)")
-        .selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-            .attr("cx", function(d,i) {return hscale(d.AverageCityMPG)})
-            .attr("cy", function(d,i) {return vscale(d.AverageHighwayMPG)})
-            .attr("r", function(d,i) {return parseInt(d.EngineCylinders)+2;})
-    
-    var y_axis =
-        d3.axisLeft(vscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
-    var x_axis =
-        d3.axisBottom(hscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
-    
-    d3.select("svg")
-        .append("g")
-            .attr("transform","translate(50,50)")
-            .call(y_axis);
-    
-    d3.select("svg")
-        .append("g")
-            .attr("transform","translate(50,450)")
-            .call(x_axis);
-  
-  }
-</script>
-</body>
-    
+    <script>
+    async function init() {
+        
+        var hscale = d3.scaleLog().domain([10,150]).range([0,400])             //CITY
+        var vscale = d3.scaleLog().domain([10,150]).range([400,0])             //HIGHWAY
+        
+        data = await d3.csv("https://flunky.github.io/cars2017.csv");
+        
+        d3.select("svg")
+            .append("g")
+                .attr("transform","translate(50,50)")
+            .selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+                .attr("cx", function(d,i) {return hscale(d.AverageCityMPG)})
+                .attr("cy", function(d,i) {return vscale(d.AverageHighwayMPG)})
+                .attr("r", function(d,i) {return parseInt(d.EngineCylinders)+2;})
+        
+        var y_axis =
+            d3.axisLeft(vscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
+        var x_axis =
+            d3.axisBottom(hscale).tickValues([10,20,50,100]).tickFormat(d3.format("~s"))
+        
+        d3.select("svg")
+            .append("g")
+                .attr("transform","translate(50,50)")
+                .call(y_axis);
+        
+        d3.select("svg")
+            .append("g")
+                .attr("transform","translate(50,450)")
+                .call(x_axis);
+      
+      }
+    </script>
+    </body>
 </div>
     
 </html>
