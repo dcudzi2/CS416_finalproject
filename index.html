@@ -21,23 +21,21 @@
 
 <div id="division" style="text-align:center;">
     <p class="center" style="font-family: Helvetica; font-size: 12px">
-        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
+        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.<br><br>Click one of the pollutant metrics to begin. Hover for details.
     </p>
     
     <!--Buttons change index of what's obtained from the map, resulting in a change on the map.-->
-    <button onclick="updateOUT(0)">AQI</button>
-    <button onclick="updateOUT(1)">Nitrous (NO2)</button>
-    <button onclick="updateOUT(2)">Ozone (O3)</button>
+    <!--It's a stupid solution, but these are called twice to get color maps to update appropriately.-->
+    <button onclick="updateOUT(0);updateOUT(0)">AQI</button>
+    <button onclick="updateOUT(1);updateOUT(1)">Nitrous (NO2)</button>
+    <button onclick="updateOUT(2);updateOUT(2)">Ozone (O3)</button>
         
     <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
 </div>
 
 <script>
 
-//data_O3 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_44201_2020_OZONE_ABRIDGED.csv");
-//data_NO2 = await d3.csv("https://dcudzi2.github.io/CS416_finalproject/daily_42602_2020_NO2_ABRIDGED.csv");
-
-//LET FUNCTIONS FOR EVENTS
+//event handlers
 let mouseOver = function(d) {
     d3.selectAll(".State")
         .transition()
@@ -115,29 +113,6 @@ function ready(error, topo) {
 	
     topology = topo; //make topology accessible to the other update function
     
-    //Accepts an integer that updates the index that is taken from the map
-      var u = svg.selectAll(".test")
-      	.data(topo.features)
-        
-      u
-      	.enter()
-        .append("path")
-        .attr("class", ".test")
-        .style("opacity", .8)
-        .merge(u)
-        //
-        .on("mouseover", mouseOver)
-        .on("mouseleave", mouseLeave)
-        .on("mousemove", mouseMove)
-        .attr("d", d3.geoPath()
-         	.projection(projection))
-        .attr("fill", function (d) {
-            d.pollutant_val = data.get(d.id)[0] || 0;
-            return colorScale(d.pollutant_val);
-          })
-        .style("stroke", "transparent")
-        .attr("class", function(d){ return "State" })
-
 }
 
 function updateOUT(index) {
@@ -156,8 +131,6 @@ function updateOUT(index) {
       console.log(min)
       console.log(max)
       
-      //See code from above
-      //workaround solution for now sure to make sure toppology info stays retained
       var u = svg.selectAll(".test")
       	.data(topology.features)
 	
