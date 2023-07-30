@@ -107,7 +107,7 @@ var projection = d3.geoMercator()
 
 //DATA IS A MAP - this complicates things but I don't know how to implement it better
 var data = d3.map();
-var colorScale = d3.scaleLinear()
+var colorScale = d3.scaleLinear() //arbitrary initialization
   .domain([0,12.5,25])
   .range(['green','yellow','red']);
 
@@ -135,7 +135,8 @@ function updateOUT(index) {
 	  var min = 99999
 	  var max = 0
 	  for(var i = 0; i < topology.features.length; i++) {
-		if (parseFloat(topology.features[i].pollutant_val) < min) {min = parseFloat(topology.features[i].pollutant_val)}
+		if (parseFloat(topology.features[i].pollutant_val) < min && parseFloat(topology.features[i].pollutant_val) > 0)
+			{min = parseFloat(topology.features[i].pollutant_val)}
 		if (parseFloat(topology.features[i].pollutant_val) > max) {max = parseFloat(topology.features[i].pollutant_val)}
 	  }
 	  colorScale = d3.scaleLinear()
