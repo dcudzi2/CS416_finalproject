@@ -114,7 +114,7 @@ var colorScale = d3.scaleLinear()
 // Load external data and boot
 d3.queue()
   .defer(d3.json, "https://dcudzi2.github.io/CS416_finalproject/us-states1.json")
-  .defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/statesdata1.csv", function(d) { data.set(d.id, [d.value, d.value2, d.value3]); })
+  .defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/CollatedNO2OzoneAQIData.csv", function(d) { data.set(d.id, [d.AQIAvg, d.NO2Avg, d.O3Avg]); })
   .await(ready);
   
 var topology;
