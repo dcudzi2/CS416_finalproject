@@ -115,28 +115,29 @@ function ready(error, topo) {
     function update(index) {
       var u = svg.selectAll(".test")
       	.data(topo.features)
-      
-      //Draw the map
-      svg.append("g")
-        .selectAll("path")
-        .data(topo.features)
-        .enter()
+        
+      u
+      	.enter()
         .append("path")
-          // draw each State
-          .attr("d", d3.geoPath()
-            .projection(projection)
-          )
+        .attr("class", ".test")
+        .style("opacity", .8)
+        .merge(u)
+        //
+        .on("mouseover", mouseOver)
+        .on("mouseleave", mouseLeave)
+        .on("mousemove", mouseMove)
+        .transition().duration(3000)
+ 
+        .attr("d", d3.geoPath()
+         	.projection(projection))
           // set the color of each State
-          .attr("fill", function (d) {
-            d.pollutant_val = data.get(d.id)[index] || 0; //DATA IS A MAP WHOSE KEY IS THE STATE ID IN ALPHABETICAL ORDER - REMEMBER THIS WHEN ADDING SCENE CHANGES
+        .attr("fill", function (d) {
+            d.pollutant_val = data.get(d.id)[index] || 0;
             return colorScale(d.pollutant_val);
           })
         .style("stroke", "transparent")
         .attr("class", function(d){ return "State" })
-        .style("opacity", .8)
-        .on("mouseover", mouseOver)
-        .on("mouseleave", mouseLeave)
-        .on("mousemove", mouseMove)   
+
     }
 
     update(0)
