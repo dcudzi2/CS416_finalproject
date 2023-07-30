@@ -25,9 +25,9 @@
     </p>
     
     <!--Buttons change index of what's obtained from the map, resulting in a change on the map.-->
-    <button onclick="update(0)">AQI</button>
-    <button onclick="update(1)">Nitrous (NO2)</button>
-    <button onclick="update(2)">Ozone (O3)</button>
+    <button onclick="updateOUT(0)">AQI</button>
+    <button onclick="updateOUT(1)">Nitrous (NO2)</button>
+    <button onclick="updateOUT(2)">Ozone (O3)</button>
         
     <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
 </div>
@@ -108,9 +108,13 @@ d3.queue()
   .defer(d3.json, "https://dcudzi2.github.io/CS416_finalproject/us-states1.json")
   .defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/statesdata1.csv", function(d) { data.set(d.id, [d.value, d.value2, d.value3]); })
   .await(ready);
+  
+var topology;
 
 function ready(error, topo) {
-
+	
+    topology = topo;
+    
     //Accepts an integer that updates the index that is taken from the map
     function update(index) {
       var u = svg.selectAll(".test")
@@ -142,6 +146,30 @@ function ready(error, topo) {
 
     update(0)
 }
+
+function updateOUT(index) {
+      var u = svg.selectAll(".test")
+      	.data(topology.features)
+        
+      u
+      	.enter()
+        .append("path")
+        .attr("class", ".test")
+        .merge(u)
+        //
+        .transition().duration(3000)
+                .style("opacity", .3)
+        .attr("d", d3.geoPath()
+         	.projection(projection))
+          // set the color of each State
+        .attr("fill", function (d) {
+            d.pollutant_val = data.get(d.id)[index] || 0;
+            return colorScale(d.pollutant_val);
+          })
+        .style("stroke", "transparent")
+        .attr("class", function(d){ return "State" })
+
+    }
 
 </script>
 
