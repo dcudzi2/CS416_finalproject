@@ -1,13 +1,13 @@
 name,id,value,value2,value3
-Alabama,1,7.9,3.239,1.478
-Alaska,2,1.4,0.574,3.852
-Arizona,3,14.7,6.027,7.054
-Arkansas,4,13.4,5.494,5.988
-California,5,14.1,5.781,6.562
-Colorado,6,12.9,5.289,5.578
-Connecticut,7,9.5,3.895,2.79
-Delaware,8,13.7,5.617,6.234
-District of Columbia,9,6.6,2.706,0.412
+Alabama,01,7.9,3.239,1.478
+Alaska,02,1.4,0.574,3.852
+Arizona,03,14.7,6.027,7.054
+Arkansas,04,13.4,5.494,5.988
+California,05,14.1,5.781,6.562
+Colorado,06,12.9,5.289,5.578
+Connecticut,07,9.5,3.895,2.79
+Delaware,08,13.7,5.617,6.234
+District of Columbia,09,6.6,2.706,0.412
 Florida,10,4.4,1.804,1.4
 Georgia,11,11.6,4.756,4.512
 Hawaii,12,17.4,7.134,9.268
