@@ -28,10 +28,10 @@
 
 <div id="division" style="text-align:center;">
     <p class="center" style="font-family: Helvetica; font-size: 16px">
-        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, usually hourly too. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.<br><br>Click one of the pollutant metrics to begin. Hover for details.
+        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, usually hourly too. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.<br><br><b>Click one of the pollutant metrics to begin. Hover for details.</b>
     </p>
     
-    <!--Buttons change index of what's obtained from the map, resulting in a change on the map.-->
+    <!--Buttons change index of what's obtained from the data map, resulting in a change on the map.-->
     <!--It's a stupid solution, but these are called twice to get color maps to update appropriately between scenes.-->
     <div class="center">
       <button onclick="updateOUT(0);updateOUT(0)">AQI</button>
@@ -44,7 +44,6 @@
 </div>
 
 <script>
-
 //event handlers
 let mouseOver = function(d) {
     d3.selectAll(".State")
@@ -81,7 +80,7 @@ let mouseMove = function(d) {
         //JSON.stringify(d) to investigate contents of the state data
 }
 
-//Toooltip setup
+//toooltip setup
 var tooltip = d3.select("body")
     .append("div")
     .style("position", "absolute")
@@ -95,27 +94,27 @@ var tooltip = d3.select("body")
     .html("You should not be seeing this.");
     
 var svg = d3.select("#mainmap"),
-  width = +svg.attr("width"),
-  height = +svg.attr("height");
+	width = +svg.attr("width"),
+	height = +svg.attr("height");
 
-//Get the map created and centered
+//get the map created and centered
 var path = d3.geoPath();
 var projection = d3.geoMercator()
-  .scale(325)
-  .center([-110,52])
-  .translate([width / 2, height / 2]);
+	.scale(325)
+	.center([-110,52])
+	.translate([width / 2, height / 2]);
 
-//DATA IS A MAP - this complicates things but I don't know how to implement it better
+//DATA IS A MAP (the key-value thing) - this complicates things but I don't know how to implement it better
 var data = d3.map();
 var colorScale = d3.scaleLinear() //arbitrary initialization
-  .domain([0,12.5,25])
-  .range(['green','yellow','red']);
+	.domain([0,12.5,25])
+  	.range(['green','yellow','red']);
 
-// Load external data and boot
+//load external data
 d3.queue()
-  .defer(d3.json, "https://dcudzi2.github.io/CS416_finalproject/us-states1.json")
-  .defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/CollatedNO2OzoneAQIData.csv", function(d) { data.set(d.id, [d.AQIAvg, d.NO2Avg, d.O3Avg]); })
-  .await(ready);
+	.defer(d3.json, "https://dcudzi2.github.io/CS416_finalproject/us-states1.json")
+	.defer(d3.csv, "https://dcudzi2.github.io/CS416_finalproject/CollatedNO2OzoneAQIData.csv", function(d) { data.set(d.id, [d.AQIAvg, d.NO2Avg, d.O3Avg]); })
+	.await(ready);
   
 var topology;
 
@@ -126,10 +125,10 @@ function ready(error, topo) {
 }
 
 function updateOUT(index) {
-	  //Prevents layers from building up and lagging
+	  //prevents layers from building up and lagging
 	  svg.selectAll("*").remove()
 	  
-	  //Prep material for legend and color scaling
+	  //prep material for legend and color scaling
 	  var legendOptions = ["AQI", "NO2 (PPB)", "O3 (PPM)"]
 	  
 	  var min = 99999
@@ -145,7 +144,7 @@ function updateOUT(index) {
 	  console.log(min)
 	  console.log(max)
 	  
-	  //Redo data thingy
+	  //draw the buttons ONLY when AQI/O3/NO2 buttons are pressed
 	  var u = svg.selectAll(".test")
 		.data(topology.features)
 	
@@ -215,13 +214,12 @@ function updateOUT(index) {
 	var legendScale = d3.scaleLinear()
 		.range([0, 300])
 		.domain([min, max]);
-
 	legendHost.append("g")
 		.attr("transform", "translate(10,5)")
 		.call(d3.axisBottom(legendScale))
-        
+
+	//annotations conditional to a scene
     var annotations = []
-    //annotations conditional to a scene
     if(index == 0) {
     	annotations.push(
         	{
@@ -297,10 +295,13 @@ function updateOUT(index) {
 </script>
 
 <p style="font-family: Helvetica; font-size: 10px">
-    <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths; this was conducted independently to avoid overloading github with files >25 MB in size.</em>
+    <em><br>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths; this was conducted independently to avoid overloading Github with files >25 MB in size.</em>
 </p>
 <p style="font-family: Helvetica; font-size: 10px">
     <em>Many thanks to <a href="https://d3-graph-gallery.com/graph/choropleth_hover_effect.html">Yan Holtz</a> for this resource in creating choropleths with D3. Additional thanks to <a href="https://d3-graph-gallery.com/graph/line_change_data.html">this resource</a> for help with transitions, even if it's a little broken here.</em>
+</p>
+<p style="font-family: Helvetica; font-size: 10px">
+    <em>Annotations in D3 are generated using a library by <a href="https://d3-annotation.susielu.com/">Susie Lu.</a></em>
 </p>
     
 </html>
