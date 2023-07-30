@@ -102,7 +102,7 @@ var svg = d3.select("#mainmap"),
 var path = d3.geoPath();
 var projection = d3.geoMercator()
   .scale(325)
-  .center([-125,52])
+  .center([-110,52])
   .translate([width / 2, height / 2]);
 
 //DATA IS A MAP - this complicates things but I don't know how to implement it better
@@ -161,21 +161,21 @@ function updateOUT(index) {
 		.attr("d", d3.geoPath()
 			.projection(projection))
 		.attr("fill", function (d) {
-			d.pollutant_val = data.get(d.id)[index] || 0;
-			//change colorscale for current dataset
+			d.pollutant_val = data.get(d.id)[index];
+			if(d.pollutant_val < 0) {return "gray"}
 			return colorScale(d.pollutant_val);
 		  })
 		.style("stroke", "transparent")
 		.attr("class", function(d){ return "State" })
 	
-		var legendHost = d3.select("#mainmap")
-			.append("svg")
-			  .attr("width", 310)
-			  .attr("height", 40)
-			  .attr("x", 390)
-			  .attr("y", 50)
+	var legendHost = d3.select("#mainmap")
+		.append("svg")
+		  .attr("width", 310)
+		  .attr("height", 40)
+		  .attr("x", 390)
+		  .attr("y", 50)
 		
-		//implement gradient, see https://www.freshconsulting.com/insights/blog/d3-js-gradients-the-easy-way/
+	//implement gradient, see https://www.freshconsulting.com/insights/blog/d3-js-gradients-the-easy-way/
 	var legend = legendHost.append("svg:linearGradient")
 		.attr("id", "gradient")
 		.attr("x1", "0%")
@@ -233,7 +233,7 @@ function updateOUT(index) {
             connector: {
               end: "arrow" // 'dot' also available
             },
-            x: 400,
+            x: 320,
             y: 350,
             dy: -1,
             dx: -200
