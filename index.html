@@ -220,7 +220,7 @@ function updateOUT(index) {
 
 	//annotations conditional to a scene
     var annotations = []
-    if(index == 0) {
+    if(index == 0) { //AQI
     	annotations.push(
         	{
             note: {
@@ -239,7 +239,7 @@ function updateOUT(index) {
         }
         )
     }
-    if(index == 1) {
+    if(index == 1) { //NO2
     	annotations.push(
         	{
             note: {
@@ -258,7 +258,7 @@ function updateOUT(index) {
         }
         )
     }
-    if(index == 2) {
+    if(index == 2) { //O3
     	annotations.push(
         	{
             note: {
@@ -273,6 +273,23 @@ function updateOUT(index) {
             x: 110,
             y: 450,
             dy: -100,
+            dx: 0
+        }
+        )
+	annotations.push(
+        	{
+            note: {
+              label: "Outside of AQI as exacerbated by wildfire smoke, many other metrics suffer in desert regions of the U.S., especially Nevada. The eastern U.S., by comparison, is a lot greener.",
+              title: "Desert Air Quality",
+              wrap: 150,
+              align: "middle"
+            },
+            connector: {
+              end: "arrow" // 'dot' also available
+            },
+            x: 335,
+            y: 350,
+            dy: -150,
             dx: 0
         }
         )
