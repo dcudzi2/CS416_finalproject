@@ -9,14 +9,16 @@
         padding: 30px;
     }
 </style>
-
+    
+<div id="buttons">
 <h1 style="font-family: Helvetica; text-align:center; font-size: 30px">
     CS416: Air Quality 2020 (EPA)
 </h1>
 <h2 style="font-family: Helvetica; text-align:center; font-size: 15px">
     <em>By Daniel Cudzich as part of Summer 2023</em>
 </h2>
-    
+</div>
+
 <div id="division" style="text-align:center;">
     <p class="center" style="font-family: Helvetica; font-size: 12px">
         The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
@@ -60,10 +62,10 @@ let mouseLeave = function(d) {
 
 let mouseMove = function(d) {
     return tooltip
-        .style("top", (d3.event.pageY-40)+"px")
-        .style("left",(d3.event.pageX+40)+"px")
-        .html(d.properties.name + ": "+d.total)
-        //JSON.stringify(d))
+        .style("top", (d3.event.pageY-30)+"px")
+        .style("left",(d3.event.pageX+10)+"px")
+        .html(d.properties.name + ": "+d.pollutant_val)
+        //JSON.stringify(d) to investigate contents of the state data
 }
 
 //Toooltip setup
@@ -73,7 +75,11 @@ var tooltip = d3.select("body")
     .style("z-index", "10")
     .style("visibility", "hidden")
     .style("background-color", "white")
-    .html("<p font-family: Helvetica; font-size: 10px>You should not be seeing this.</p>");
+    .style("font-family", "Helvetica")
+    .style("font-size", "14px")
+    .style("border", "3px solid #73AD21")
+    .style("padding", "5px")
+    .html("You should not be seeing this.");
     
 var svg = d3.select("svg"),
   width = +svg.attr("width"),
@@ -112,12 +118,11 @@ function ready(error, topo) {
       )
       // set the color of each State
       .attr("fill", function (d) {
-        d.total = data.get(d.id) || 0;
-        return colorScale(d.total);
+        d.pollutant_val = data.get(d.id) || 0;
+        return colorScale(d.pollutant_val);
       })
     .style("stroke", "transparent")
     .attr("class", function(d){ return "State" })
-    .attr("AQI", function(d) {return d.value})
     .style("opacity", .8)
     .on("mouseover", mouseOver)
     .on("mouseleave", mouseLeave)
@@ -127,7 +132,7 @@ function ready(error, topo) {
 </script>
 
 <p style="font-family: Helvetica; font-size: 10px">
-    <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020.</em>
+    <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths.</em>
 </p>
 <p style="font-family: Helvetica; font-size: 10px">
     <em>Many thanks to <a href="https://d3-graph-gallery.com/graph/choropleth_hover_effect.html">Yan Holtz</a> for this resource in creating choropleths with D3.</em>
