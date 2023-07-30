@@ -21,15 +21,18 @@
 
 <div id="division" style="text-align:center;">
     <p class="center" style="font-family: Helvetica; font-size: 12px">
-        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.<br><br>Click one of the pollutant metrics to begin. Hover for details.
+        The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, usually hourly too. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.<br><br>Click one of the pollutant metrics to begin. Hover for details.
     </p>
     
     <!--Buttons change index of what's obtained from the map, resulting in a change on the map.-->
     <!--It's a stupid solution, but these are called twice to get color maps to update appropriately.-->
-    <button onclick="updateOUT(0);updateOUT(0)">AQI</button>
-    <button onclick="updateOUT(1);updateOUT(1)">Nitrous (NO2)</button>
-    <button onclick="updateOUT(2);updateOUT(2)">Ozone (O3)</button>
-        
+    <div class="center">
+      <button onclick="updateOUT(0);updateOUT(0)">AQI</button>
+      <button onclick="updateOUT(1);updateOUT(1)">Nitrogen Dioxide (NO2)</button>
+      <button onclick="updateOUT(2);updateOUT(2)">Ozone (O3)</button>
+    </div>
+    <p><br></p>
+    
     <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
 </div>
 
@@ -116,8 +119,11 @@ function ready(error, topo) {
 }
 
 function updateOUT(index) {
-      svg.selectAll("*").remove() //prevents layers from building up and lagging
+      //Prevents layers from building up and lagging
+      svg.selectAll("*").remove()
       
+      //Prep material for legend and color scaling
+      var legendOptions = ["AQI", "NO2 (PPB)", "O3 (PPM)"]
       
       var min = 99999
       var max = 0
@@ -131,6 +137,7 @@ function updateOUT(index) {
       console.log(min)
       console.log(max)
       
+      //Redo data thingy
       var u = svg.selectAll(".test")
       	.data(topology.features)
 	
@@ -154,12 +161,64 @@ function updateOUT(index) {
         .style("stroke", "transparent")
         .attr("class", function(d){ return "State" })
 
+		var legendHost = d3.select("#mainmap")
+			.append("svg")
+              .attr("width", 310)
+              .attr("height", 40)
+              .attr("x", 390)
+              .attr("y", 50)
+		
+        //implement gradient, see https://www.freshconsulting.com/insights/blog/d3-js-gradients-the-easy-way/
+	var legend = legendHost.append("svg:linearGradient")
+		.attr("id", "gradient")
+		.attr("x1", "0%")
+		.attr("y1", "100%")
+		.attr("x2", "100%")
+		.attr("y2", "100%")
+		.attr("spreadMethod", "pad");
+	legend.append("stop")
+		.attr("offset", "0%")
+		.attr("stop-color", "green")
+        legend.append("stop")
+		.attr("offset", "50%")
+		.attr("stop-color", "yellow")
+		legend.append("stop")
+		.attr("offset", "100%")
+		.attr("stop-color", "red")
+
+	//add the actual rectangle
+	legendHost.append("rect")
+		.attr("width", 300)
+		.attr("height", 40)
+		.style("fill", "url(#gradient)")
+	        .style("stroke", "green")
+	        .style("stroke-width", "5px")
+			.attr("transform", "translate(10,0)");
+        
+        //labeling and scale
+        legendHost.append("text")
+            .attr("class", "x label")
+            .attr("text-anchor", "top")
+            .attr("x", 11)
+            .attr("y", 35)
+            .style("font-family", "Helvetica")
+            .style("font-size", "10px")
+            .text(legendOptions[index]);
+
+	var legendScale = d3.scaleLinear()
+		.range([0, 300])
+		.domain([min, max]);
+
+	legendHost.append("g")
+		.attr("transform", "translate(10,5)")
+		.call(d3.axisBottom(legendScale))
+
     }
 
 </script>
 
 <p style="font-family: Helvetica; font-size: 10px">
-    <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths.</em>
+    <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths; this was conducted independently to avoid overloading github with files >25 MB in size.</em>
 </p>
 <p style="font-family: Helvetica; font-size: 10px">
     <em>Many thanks to <a href="https://d3-graph-gallery.com/graph/choropleth_hover_effect.html">Yan Holtz</a> for this resource in creating choropleths with D3. Additional thanks to <a href="https://d3-graph-gallery.com/graph/line_change_data.html">this resource</a> for help with transitions, even if it's a little broken here.</em>
