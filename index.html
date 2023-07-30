@@ -113,10 +113,9 @@ var topology;
 
 function ready(error, topo) {
 	
-    topology = topo;
+    topology = topo; //make topology accessible to the other update function
     
     //Accepts an integer that updates the index that is taken from the map
-    function update(index) {
       var u = svg.selectAll(".test")
       	.data(topo.features)
         
@@ -130,40 +129,49 @@ function ready(error, topo) {
         .on("mouseover", mouseOver)
         .on("mouseleave", mouseLeave)
         .on("mousemove", mouseMove)
-        .transition().duration(3000)
- 
         .attr("d", d3.geoPath()
          	.projection(projection))
-          // set the color of each State
         .attr("fill", function (d) {
-            d.pollutant_val = data.get(d.id)[index] || 0;
+            d.pollutant_val = data.get(d.id)[0] || 0;
             return colorScale(d.pollutant_val);
           })
         .style("stroke", "transparent")
         .attr("class", function(d){ return "State" })
 
-    }
-
-    update(0)
 }
 
 function updateOUT(index) {
+      
+      min = 99999
+      max = 0
+      for(var i = 0; i < topology.features.length; i++) {
+      	if (topology.features[i].pollutant_val < min) {min = topology.features[i].pollutant_val}
+        if (topology.features[i].pollutant_val > max) {max = topology.features[i].pollutant_val}
+      }
+      colorScale = d3.scaleLinear()
+        .domain([min,(min + max) / 2,max])
+        .range(['green','yellow','red']);
+      
+      //See code from above
+      //workaround solution for now sure to make sure toppology info stays retained
       var u = svg.selectAll(".test")
       	.data(topology.features)
-        
+	
       u
       	.enter()
         .append("path")
         .attr("class", ".test")
         .merge(u)
-        //
+        .on("mouseover", mouseOver)
+        .on("mouseleave", mouseLeave)
+        .on("mousemove", mouseMove)
         .transition().duration(3000)
                 .style("opacity", .3)
         .attr("d", d3.geoPath()
          	.projection(projection))
-          // set the color of each State
         .attr("fill", function (d) {
             d.pollutant_val = data.get(d.id)[index] || 0;
+            //change colorscale for current dataset
             return colorScale(d.pollutant_val);
           })
         .style("stroke", "transparent")
@@ -177,7 +185,7 @@ function updateOUT(index) {
     <em>EPA data obtained from <a href="https://aqs.epa.gov/aqsweb/airdata/download_files.html#Meta">this EPA website allowing for downloads of prepared summary data.</a> Look for the "Daily Summary Data" table, year 2020. Data has been averaged over each state and over the full year for representation on the choropleths.</em>
 </p>
 <p style="font-family: Helvetica; font-size: 10px">
-    <em>Many thanks to <a href="https://d3-graph-gallery.com/graph/choropleth_hover_effect.html">Yan Holtz</a> for this resource in creating choropleths with D3.</em>
+    <em>Many thanks to <a href="https://d3-graph-gallery.com/graph/choropleth_hover_effect.html">Yan Holtz</a> for this resource in creating choropleths with D3. Additional thanks to <a href="https://d3-graph-gallery.com/graph/line_change_data.html">this resource</a> for help with transitions, even if it's a little broken here.</em>
 </p>
     
 </html>
