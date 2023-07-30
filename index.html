@@ -240,19 +240,57 @@ function updateOUT(index) {
             dx: -200
         }
         )
+    }
+    if(index == 1) {
+    	annotations.push(
+        	{
+            note: {
+              label: "Nitrogen dioxide concentrations are not as frequently tracked as other measures of air quality.",
+              title: "Missing Data",
+              wrap: 150,
+              align: "right"
+            },
+            connector: {
+              end: "arrow" // 'dot' also available
+            },
+            x: 250,
+            y: 200,
+            dy: -1,
+            dx: 300
+        }
+        )
+    }
+    if(index == 2) {
+    	annotations.push(
+        	{
+            note: {
+              label: "If you want pristine air, Hawaii is the place to be!",
+              title: "Best Air Quality in the U.S.",
+              wrap: 150,
+              align: "middle"
+            },
+            connector: {
+              end: "arrow" // 'dot' also available
+            },
+            x: 110,
+            y: 450,
+            dy: -100,
+            dx: 0
+        }
+        )
+    }
     annotations = annotations.map(function(d){ d.color = "gray"; return d})
 
-	//actually instantiate the annotations
+    //actually instantiate the annotations
     const makeAnnotations = d3.annotation()
           .type(d3.annotationLabel)
           .annotations(annotations)
 
-        d3.select("svg")
+    d3.select("svg")
           .append("g")
           .attr("class", "annotation-group")
           .style("font-size", "10px")
           .call(makeAnnotations)
-    }
 
     }
 
