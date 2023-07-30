@@ -23,9 +23,11 @@
     <p class="center" style="font-family: Helvetica; font-size: 12px">
         The Environmental Protection Agency (EPA) tracks air quality data across the United States, with meteorological stations running to collect data on a daily basis, sometimes even hourly. This allows for extensive tracking over time as well as comparisons between geographic regions, although major gaps do exist within and between states, with some states missing data for certain pollutants entirely. This data visualization illustrates air quality across the U.S., with notable trends, caveats, and additional details provided where relevant.
     </p>
-    <button onclick="update(data1)">Ozone (O3)</button>
-    <button onclick="update(data2)">Nitrous (NO2)</button>
-    <button onclick="update(data2)">AQI</button>
+    
+    <!--Buttons change index of what's obtained from the map, resulting in a change on the map.-->
+    <button onclick="update(0)">AQI</button>
+    <button onclick="update(1)">Nitrous (NO2)</button>
+    <button onclick="update(2)">Ozone (O3)</button>
         
     <svg id="mainmap" width="750" height="500" style="border:1px solid black"></svg>
 </div>
@@ -45,7 +47,6 @@ let mouseOver = function(d) {
         .transition()
         .duration(100)
         .style("opacity", 1)
-    //tooltip.text(d);
     return tooltip.style("visibility", "visible");
 }
   
@@ -57,6 +58,10 @@ let mouseLeave = function(d) {
     d3.select(this)
         .transition()
         .duration(100)
+    d3.select(this)
+        .transition()
+        .duration(100)
+        .style("opacity", 0.8)
     return tooltip.style("visibility", "hidden");
 }
 
@@ -81,7 +86,7 @@ var tooltip = d3.select("body")
     .style("padding", "5px")
     .html("You should not be seeing this.");
     
-var svg = d3.select("svg"),
+var svg = d3.select("#mainmap"),
   width = +svg.attr("width"),
   height = +svg.attr("height");
 
@@ -92,7 +97,7 @@ var projection = d3.geoMercator()
   .center([-125,52])
   .translate([width / 2, height / 2]);
 
-//Create the color scale
+//DATA IS A MAP - this complicates things but I don't know how to implement it better
 var data = d3.map();
 var colorScale = d3.scaleLinear()
   .domain([0,12.5,25])
@@ -106,27 +111,35 @@ d3.queue()
 
 function ready(error, topo) {
 
-  //Draw the map
-  svg.append("g")
-    .selectAll("path")
-    .data(topo.features)
-    .enter()
-    .append("path")
-      // draw each State
-      .attr("d", d3.geoPath()
-        .projection(projection)
-      )
-      // set the color of each State
-      .attr("fill", function (d) {
-        d.pollutant_val = data.get(d.id)[2] || 0; //DATA IS A MAP WHOSE KEY IS THE STATE ID IN ALPHABETICAL ORDER - REMEMBER THIS WHEN ADDING SCENE CHANGES
-        return colorScale(d.pollutant_val);
-      })
-    .style("stroke", "transparent")
-    .attr("class", function(d){ return "State" })
-    .style("opacity", .8)
-    .on("mouseover", mouseOver)
-    .on("mouseleave", mouseLeave)
-    .on("mousemove", mouseMove)
+    //Accepts an integer that updates the index that is taken from the map
+    function update(index) {
+      var u = svg.selectAll(".test")
+      	.data(topo.features)
+      
+      //Draw the map
+      svg.append("g")
+        .selectAll("path")
+        .data(topo.features)
+        .enter()
+        .append("path")
+          // draw each State
+          .attr("d", d3.geoPath()
+            .projection(projection)
+          )
+          // set the color of each State
+          .attr("fill", function (d) {
+            d.pollutant_val = data.get(d.id)[index] || 0; //DATA IS A MAP WHOSE KEY IS THE STATE ID IN ALPHABETICAL ORDER - REMEMBER THIS WHEN ADDING SCENE CHANGES
+            return colorScale(d.pollutant_val);
+          })
+        .style("stroke", "transparent")
+        .attr("class", function(d){ return "State" })
+        .style("opacity", .8)
+        .on("mouseover", mouseOver)
+        .on("mouseleave", mouseLeave)
+        .on("mousemove", mouseMove)   
+    }
+
+    update(0)
 }
 
 </script>
