@@ -141,18 +141,17 @@ function ready(error, topo) {
 }
 
 function updateOUT(index) {
-      svg.selectAll("*").remove()
+      svg.selectAll("*").remove() //prevents layers from building up and lagging
       
       
       var min = 99999
       var max = 0
       for(var i = 0; i < topology.features.length; i++) {
-      	if (topology.features[i].pollutant_val < min) {min = topology.features[i].pollutant_val}
-        if (topology.features[i].pollutant_val > max) {max = topology.features[i].pollutant_val}
-        console.log(topology.features[i].pollutant_val)
+      	if (parseFloat(topology.features[i].pollutant_val) < min) {min = parseFloat(topology.features[i].pollutant_val)}
+        if (parseFloat(topology.features[i].pollutant_val) > max) {max = parseFloat(topology.features[i].pollutant_val)}
       }
       colorScale = d3.scaleLinear()
-        .domain([min,(min + max) / 2,max])
+        .domain([min,(min + max) / 2, max])
         .range(['green','yellow','red']);
       console.log(min)
       console.log(max)
